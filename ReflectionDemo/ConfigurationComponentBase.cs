@@ -15,33 +15,9 @@ namespace ReflectionDemo
             _type = _instance.GetType();
         }
 
-        //public void UpdateSettings()
-        //{
-        //    var propInfo = _type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-        //    foreach (var prop in propInfo)
-        //    {
-        //        var attr = (SaveToConfigAttribute)Attribute.GetCustomAttribute(prop, typeof(SaveToConfigAttribute));
-
-        //        if (attr == null) continue;
-
-        //        RestorePropValueFromSettings(prop, attr);
-
-        //        Console.WriteLine($"Restored value from settings for {prop.Name}: {prop.GetValue(_instance)}");
-
-        //        SetNewPropValue(prop);
-
-        //        Console.WriteLine($"The new property value for {prop.Name}: {prop.GetValue(_instance)}");
-
-        //        SaveSettings(attr.SettingName, prop.GetValue(_instance)?.ToString());
-
-        //        Console.WriteLine();
-        //    }
-        //}
-
         public void LoadSettings()
         {
-            var propInfo = _type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var propInfo = _type.GetProperties();
 
             foreach (var prop in propInfo)
             {
@@ -55,7 +31,7 @@ namespace ReflectionDemo
 
         public void SaveSettings()
         {
-            var propInfo = _type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var propInfo = _type.GetProperties();
 
             foreach (var prop in propInfo)
             {
@@ -85,53 +61,6 @@ namespace ReflectionDemo
                     break;
             }
         }
-
-        //private void SetNewPropValue(PropertyInfo property)
-        //{
-        //    switch (property.PropertyType.Name)
-        //    {
-        //        case "Int32":
-        //            Console.Write("Enter new value: ");
-        //            property.SetValue(_instance, ParseInt() ?? property.GetValue(_instance));
-        //            break;
-        //        case "Single":
-        //            Console.Write("Enter new value: ");
-        //            property.SetValue(_instance, ParseFloat() ?? property.GetValue(_instance));
-        //            break;
-        //        case "String":
-        //            Console.Write("Enter new value: ");
-        //            property.SetValue(_instance, Console.ReadLine());
-        //            break;
-        //        case "TimeSpan":
-        //            Console.Write("Enter new value: ");
-        //            property.SetValue(_instance, ParseTimeSpan() ?? property.GetValue(_instance));
-        //            break;
-        //    }
-        //}
-
-        //private static int? ParseInt()
-        //{
-        //    var success = int.TryParse(Console.ReadLine(), out var result);
-        //    if (!success)
-        //        Console.WriteLine("You have entered not correct value for int. Property value will not change");
-        //    return success ? result : (int?)null;
-        //}
-
-        //private static float? ParseFloat()
-        //{
-        //    var success = float.TryParse(Console.ReadLine(), out var result);
-        //    if (!success)
-        //        Console.WriteLine("You have entered not correct value for float. Property value will not change");
-        //    return success ? result : (float?)null;
-        //}
-
-        //private static TimeSpan? ParseTimeSpan()
-        //{
-        //    var success = TimeSpan.TryParse(Console.ReadLine(), out var result);
-        //    if (!success)
-        //        Console.WriteLine("You have entered not correct value for TimeSpan. Property value will not change");
-        //    return success ? result : (TimeSpan?)null;
-        //}
 
         private static string ReadSetting(string key)
         {

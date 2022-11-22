@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Reflection;
 
 namespace ReflectionDemo
@@ -39,65 +38,44 @@ namespace ReflectionDemo
 
                 if (attr == null) continue;
 
-                SaveSettings(attr.SettingName, prop.GetValue(_instance)?.ToString());
+                switch (attr.ProviderType)
+                {
+                    case SettingsProvider.File:
+                        FileSettingsProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
+                        break;
+                    case SettingsProvider.ConfigurationManager:
+                        ConfigurationManagerSettingsProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
+                        break;
+                    default:
+                        ConfigurationManagerSettingsProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
+                        break;
+                }
             }
         }
 
         private void RestorePropValueFromSettings(PropertyInfo property, SaveToConfigAttribute attribute)
         {
+            Func<string, string> readSettingAction = attribute.ProviderType switch
+            {
+                SettingsProvider.File => (x) => FileSettingsProvider.ReadSetting(x),
+                SettingsProvider.ConfigurationManager => (x) => ConfigurationManagerSettingsProvider.ReadSetting(x),
+                _ => throw new ArgumentOutOfRangeException(nameof(attribute))
+            };
+
             switch (property.PropertyType.Name)
             {
                 case "Int32":
-                    property.SetValue(_instance, int.TryParse(ReadSetting(attribute.SettingName), out var intValue) ? intValue : 0);
+                    property.SetValue(_instance, int.TryParse(readSettingAction(attribute.SettingName), out var intValue) ? intValue : 0);
                     break;
                 case "Single":
-                    property.SetValue(_instance, float.TryParse(ReadSetting(attribute.SettingName), out var floatValue) ? floatValue : 0.0f);
+                    property.SetValue(_instance, float.TryParse(readSettingAction(attribute.SettingName), out var floatValue) ? floatValue : 0.0f);
                     break;
                 case "String":
-                    property.SetValue(_instance, ReadSetting(attribute.SettingName));
+                    property.SetValue(_instance, readSettingAction(attribute.SettingName));
                     break;
                 case "TimeSpan":
-                    property.SetValue(_instance, TimeSpan.TryParse(ReadSetting(attribute.SettingName), out var timeSpan) ? timeSpan : TimeSpan.Zero);
+                    property.SetValue(_instance, TimeSpan.TryParse(readSettingAction(attribute.SettingName), out var timeSpan) ? timeSpan : TimeSpan.Zero);
                     break;
-            }
-        }
-
-        private static string ReadSetting(string key)
-        {
-            var result = "";
-            try
-            {
-                var appSettings = ConfigurationManager.AppSettings;
-                result = appSettings[key] ?? "";
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error reading app settings");
-            }
-
-            return result;
-        }
-
-        private static void SaveSettings(string key, string value)
-        {
-            try
-            {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var settings = configFile.AppSettings.Settings;
-                if (settings[key] == null)
-                {
-                    settings.Add(key, value);
-                }
-                else
-                {
-                    settings[key].Value = value;
-                }
-                configFile.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error writing app settings");
             }
         }
     }

@@ -10,29 +10,34 @@ namespace ReflectionDemo
             ShowProps(demo);
 
             Console.WriteLine("Loading values from settings...");
+            Console.WriteLine();
             demo.LoadSettings();
 
             ShowProps(demo);
 
-            Console.WriteLine("Modify props values:");
-            SetNewPropValue(demo);
+            Console.WriteLine("To modify props values enter 1");
+            if (Console.ReadKey().KeyChar == '1')
+            {
+                Console.WriteLine();
+                SetNewPropValue(demo);
+                Console.WriteLine("Saving Settings...");
+                demo.SaveSettings();
+
+                Console.WriteLine();
+                ShowProps(demo);
+            }
+
             Console.WriteLine();
-
-            ShowProps(demo);
-
-            Console.WriteLine("Saving Settings...");
-            demo.SaveSettings();
-
             Console.WriteLine("Restart program to see if property values saved");
         }
 
         private static void ShowProps(CustomAttributeDemo demo)
         {
             Console.WriteLine("Properties values:");
-            Console.WriteLine($"IntProp: {demo.IntProp}");
-            Console.WriteLine($"FloatProp: {demo.FloatProp}");
-            Console.WriteLine($"StringProp: {demo.StringProp}");
-            Console.WriteLine($"TimeSpanProp: {demo.TimeSpanProp}");
+            Console.WriteLine($"\tIntProp: {demo.IntProp}");
+            Console.WriteLine($"\tFloatProp: {demo.FloatProp}");
+            Console.WriteLine($"\tStringProp: {demo.StringProp}");
+            Console.WriteLine($"\tTimeSpanProp: {demo.TimeSpanProp}");
             Console.WriteLine();
         }
 

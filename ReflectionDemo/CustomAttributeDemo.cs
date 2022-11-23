@@ -4,13 +4,13 @@ namespace ReflectionDemo
 {
     public class CustomAttributeDemo : ConfigurationComponentBase
     {
-        [SaveToConfig("TestInt", SettingsProvider.File)]
+        [SaveToConfig("TestInt", SettingsProvider.ConfigurationManager)]
         public int IntProp { get; set; }
-        [SaveToConfig("TestFloat", SettingsProvider.File)]
+        [SaveToConfig("TestFloat", SettingsProvider.ConfigurationManager)]
         public float FloatProp { get; set; }
-        [SaveToConfig("TestString", SettingsProvider.File)]
+        [SaveToConfig("TestString", SettingsProvider.ConfigurationManager)]
         public string StringProp { get; set; }
-        [SaveToConfig("TestTimeSpan", SettingsProvider.File)]
+        [SaveToConfig("TestTimeSpan", SettingsProvider.ConfigurationManager)]
         public TimeSpan TimeSpanProp { get; set; }
     }
 }

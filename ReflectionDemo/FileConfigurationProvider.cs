@@ -7,7 +7,7 @@ using System.IO;
 
 namespace ReflectionDemo
 {
-    public static class FileSettingsProvider
+    public static class FileConfigurationProvider
     {
         private static string _appSettingsPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
         private static string _json = File.ReadAllText(_appSettingsPath);
@@ -15,7 +15,7 @@ namespace ReflectionDemo
         private static dynamic _config;
         private static IDictionary<string, object> _expando;
 
-        static FileSettingsProvider()
+        static FileConfigurationProvider()
         {
             _jsonSettings.Converters.Add(new ExpandoObjectConverter());
             _jsonSettings.Converters.Add(new StringEnumConverter());

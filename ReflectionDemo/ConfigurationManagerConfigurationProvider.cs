@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace ReflectionDemo
 {
-    public static class ConfigurationManagerSettingsProvider
+    public static class ConfigurationManagerConfigurationProvider
     {
         public static string ReadSetting(string key)
         {

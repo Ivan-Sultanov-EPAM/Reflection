@@ -41,13 +41,13 @@ namespace ReflectionDemo
                 switch (attr.ProviderType)
                 {
                     case SettingsProvider.File:
-                        FileSettingsProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
+                        FileConfigurationProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
                         break;
                     case SettingsProvider.ConfigurationManager:
-                        ConfigurationManagerSettingsProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
+                        ConfigurationManagerConfigurationProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
                         break;
                     default:
-                        ConfigurationManagerSettingsProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
+                        ConfigurationManagerConfigurationProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
                         break;
                 }
             }
@@ -57,8 +57,8 @@ namespace ReflectionDemo
         {
             Func<string, string> readSettingAction = attribute.ProviderType switch
             {
-                SettingsProvider.File => (x) => FileSettingsProvider.ReadSetting(x),
-                SettingsProvider.ConfigurationManager => (x) => ConfigurationManagerSettingsProvider.ReadSetting(x),
+                SettingsProvider.File => (x) => FileConfigurationProvider.ReadSetting(x),
+                SettingsProvider.ConfigurationManager => (x) => ConfigurationManagerConfigurationProvider.ReadSetting(x),
                 _ => throw new ArgumentOutOfRangeException(nameof(attribute))
             };
 

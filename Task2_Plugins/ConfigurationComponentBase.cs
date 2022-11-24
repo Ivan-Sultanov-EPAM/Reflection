@@ -1,17 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
-namespace ReflectionDemo
+namespace Task2_Plugins
 {
     public class ConfigurationComponentBase
     {
         private readonly ConfigurationComponentBase _instance;
         private readonly Type _type;
+        private Dictionary<string, IConfigurationProvider> _providers;
 
-        public ConfigurationComponentBase()
+        public ConfigurationComponentBase(string pluginsPath)
         {
             _instance = this;
             _type = _instance.GetType();
+            _providers = PluginLoader.LoadPlugins(pluginsPath);
         }
 
         public void LoadSettings()
@@ -41,10 +44,10 @@ namespace ReflectionDemo
                 switch (attr.ProviderType)
                 {
                     case SettingsProvider.File:
-                        FileConfigurationProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
+                        _providers["FileConfigurationProvider"].SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
                         break;
                     case SettingsProvider.ConfigurationManager:
-                        ConfigurationManagerConfigurationProvider.SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
+                        _providers["ConfigurationManagerConfigurationProvider"].SaveSetting(attr.SettingName, prop.GetValue(_instance)?.ToString());
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(SettingsProvider));
@@ -56,8 +59,8 @@ namespace ReflectionDemo
         {
             Func<string, string> readSettingAction = attribute.ProviderType switch
             {
-                SettingsProvider.File => (x) => FileConfigurationProvider.ReadSetting(x),
-                SettingsProvider.ConfigurationManager => (x) => ConfigurationManagerConfigurationProvider.ReadSetting(x),
+                SettingsProvider.File => (x) => _providers["FileConfigurationProvider"].ReadSetting(x),
+                SettingsProvider.ConfigurationManager => (x) => _providers["ConfigurationManagerConfigurationProvider"].ReadSetting(x),
                 _ => throw new ArgumentOutOfRangeException(nameof(attribute))
             };
 

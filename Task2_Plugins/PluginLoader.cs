@@ -18,8 +18,10 @@ namespace Task2_Plugins
                 {
                     var context = new AssemblyLoadContext(pluginPath);
                     var assembly = context.LoadFromAssemblyPath(pluginPath);
-                    var provider = Activator.CreateInstance(assembly.GetTypes()[0]) as IConfigurationProvider;
-                    ConfigurationProvidersPlugins.Add(Path.GetFileNameWithoutExtension(pluginPath), provider);
+                    if (Activator.CreateInstance(assembly.GetTypes()[0]) is IConfigurationProvider result)
+                    {
+                        ConfigurationProvidersPlugins.Add(Path.GetFileNameWithoutExtension(pluginPath), result);
+                    }
                 }
                 catch (Exception e)
                 {
